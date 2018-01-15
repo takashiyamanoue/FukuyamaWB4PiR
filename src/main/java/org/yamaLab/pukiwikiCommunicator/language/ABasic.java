@@ -125,15 +125,29 @@ public class ABasic extends ALisp
     }
      public boolean isDefDim(LispObject form)
     {
-        if(atom(form)) return false;
-        if(eq(car(form),recSymbol("defdim"))) return true;
-        return false;
+  	  try{
+          if(atom(form)) return false;
+          if(eq(car(form),recSymbol("defdim"))) return true;
+          return false;
+     	  }
+     	  catch(Exception e){
+       		plist("error isDefDim s=",form);
+       		Thread.dumpStack();        		
+       		return false;       		                     
+     	  }
     }
     public LispObject defExt(LispObject s, LispObject env)
     {
         if(isDefDim(s)){
-            environment=caseOfDefDim(cdr(s),env);
-            return second(s);
+        	  try{
+             environment=caseOfDefDim(cdr(s),env);
+             return second(s);
+        	  }
+        	  catch(Exception e){
+          		plist("error caseOfDefDim s=",cdr(s));
+          		Thread.dumpStack();        		
+          		return nilSymbol;       		                     
+        	  }
         }
         return nilSymbol;
     }

@@ -474,7 +474,7 @@ implements AuthDialogListener, InterpreterInterface
 	    	   pageText=pageText+line+"\n";
 	        	if(line==null) break;
 	    	    this.messageTextArea.append(line+"\n");
-//	    	    System.out.println(line);
+	    	    System.out.println(line);
 	       }
 	       method.releaseConnection();		
 	    }

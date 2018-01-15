@@ -60,6 +60,7 @@ public class Basic extends ABasic implements InterpreterInterface
         LispObject x=super.applyMiscOperation(proc,argl);
         if(x!=null) return x;
         if(eq(proc,recSymbol("ex"))){ // rtn=ex(object, command)
+        	try{
                 String appliname=print.print(car(argl));
                 String command=print.print(second(argl));
                 InterpreterInterface appli=this.lookUp(appliname);
@@ -69,14 +70,31 @@ public class Basic extends ABasic implements InterpreterInterface
                 }
                 MyString val=new MyString(rtn);
                 return val;
+        	}
+        	catch(Exception e){
+        		gui.parseCommand("error at applyMiscOperation.ex, println "+e.toString());
+        		plist("error applyMiscOperation.ex proc=",proc);
+        		Thread.dumpStack();        		
+        		return nilSymbol;      	            	
+        		     		
+        	}
         }
         else
         if(eq(proc,recSymbol("grep"))){ // rtn=ex(lines, regExp)
+        	try{
            	String page=print.print(car(argl));
        	    String key=print.print(second(argl));
        	    String result=grep(page,key);
             MyString val=new MyString(result);
             return val;
+        	}
+        	catch(Exception e){
+        		gui.parseCommand("error at applyMiscOperation.grep, println "+e.toString());
+        		plist("error applyMiscOperation.grep proc=",proc);
+        		Thread.dumpStack();        		
+        		return nilSymbol;      	            	
+       		
+        	}
         }
         else
         if(eq(proc,recSymbol("parseCsv"))){ // parseCsv(lines, tableArray, rowArray, colArray)
@@ -90,7 +108,10 @@ public class Basic extends ABasic implements InterpreterInterface
             parseCsv(page,tableArray,rowArray,colArray);
         	}
         	catch(Exception e){
-        		return nilSymbol;
+           		gui.parseCommand("error at applyMiscOperation.parseCsv, println "+e.toString());
+        		plist("error applyMiscOperation.parseCsv proc=",proc);
+        		Thread.dumpStack();        		
+        		return nilSymbol;      	            	
         	}
         	return recSymbol("t");
         } // end if parseCsv
@@ -156,21 +177,37 @@ public class Basic extends ABasic implements InterpreterInterface
         else
         if(eq(proc,recSymbol("getColVector"))){
         	// getColumn(dim tableArray, dim rowArray, int colIndex, dim colVector) 
+        	try{
         	String tableName=print.print(car(argl));
         	String rowName=print.print(second(argl));
         	int ix=((MyInt)(third(argl))).getInt();
         	String vecName=print.print(fourth(argl));
             return getColVector(tableName,rowName, ix, vecName);
+        	}
+        	catch(Exception e){
+          		gui.parseCommand("error at applyMiscOperation.getColVector, println "+e.toString());
+        		plist("error applyMiscOperation.getColVector proc=",proc);
+        		Thread.dumpStack();        		
+        		return nilSymbol;      	        		
+        	}
         }    
         else
         if(eq(proc,recSymbol("vec2csv"))){
         	// vec2csv(dim vecArray) 
+        	try{
         	String vecName=print.print(car(argl));
         	String v=vec2csv(vecName);
         	if(v==null){
         		return nilSymbol;
         	}
         	return new MyString(v);
+        	}
+        	catch(Exception e){
+           		gui.parseCommand("error at applyMiscOperation.vec2csv, println "+e.toString());
+        		plist("error applyMiscOperation.vec2csv proc=",proc);
+        		Thread.dumpStack();        		
+        		return nilSymbol;      	        		
+        	}
         }               
         else     	
         if(eq(proc,recSymbol("getResultPart"))){

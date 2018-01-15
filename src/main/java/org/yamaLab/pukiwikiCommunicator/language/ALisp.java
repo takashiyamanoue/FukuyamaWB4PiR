@@ -426,7 +426,7 @@ public class ALisp extends java.lang.Object implements Runnable
         	}
         	catch(Exception e){
         		gui.parseCommand("error at isSetf, println "+e.toString());
-        		plist("s=",s);
+        		plist("error isSetf s=",s);
         		Thread.dumpStack();        		
         		return nilSymbol;
         	}
@@ -439,7 +439,7 @@ public class ALisp extends java.lang.Object implements Runnable
         	}
         	catch(Exception e){
         		gui.parseCommand("error at isDeFun, println "+e.toString());
-        		plist("s=",s);
+        		plist("error isDeFun s=",s);
         		Thread.dumpStack();        		
         		return nilSymbol;        		
         	}
@@ -452,8 +452,8 @@ public class ALisp extends java.lang.Object implements Runnable
             else  return eval(s,env);
         	}
         	catch(Exception e){
-        		gui.parseCommand("error at defEXt, println "+e.toString());
-        		plist("s=",s);
+        		gui.parseCommand("error at defExt, println "+e.toString());
+        		plist("error defExt s=",s);
         		Thread.dumpStack();        		
         		return nilSymbol;
         	}
@@ -622,6 +622,7 @@ public class ALisp extends java.lang.Object implements Runnable
         if(gui.isTracing())
                  plist("eval..",form);
         if(atom(form)){
+        	            try{
             if(numberp(form)) rtn= form;
             else
             if(eq(tSymbol,form)) rtn= tSymbol;
@@ -644,6 +645,13 @@ public class ALisp extends java.lang.Object implements Runnable
                //
                rtn= second(w);
             }
+        	            }
+        	            catch(Exception e){
+        	        		gui.parseCommand("error at eval.atom, println "+e.toString());
+        	        		plist("error eval.atom from=",form);
+        	        		Thread.dumpStack();        		
+        	        		return nilSymbol;      	            	
+        	            }
         }
         else{
             LispObject fform=car(form);
@@ -651,9 +659,17 @@ public class ALisp extends java.lang.Object implements Runnable
                  rtn= second(form);
              else
             if(eq(fform,recSymbol("if"))) {
+            	try{
                if(!Null( eval(second(form),env)))
                      rtn=  eval(third(form), env);
                else  rtn=  eval(fourth(form),env);
+            	}
+            	catch(Exception e){
+	        		gui.parseCommand("error at eval.if, println "+e.toString());
+	        		plist("error eval.if from=",form);
+	        		Thread.dumpStack();        		
+	        		return nilSymbol;      	            	
+            	}
             }
             else
             if(eq(fform,recSymbol("cond")))
@@ -681,10 +697,19 @@ public class ALisp extends java.lang.Object implements Runnable
                 ((ListCell)(((ListCell)env).d)).a=tSymbol;
             }
             else{
+            	try{
                 rtn=evalMiscForm(form,env);
                 if(rtn!=null) return rtn;
                 else rtn= apply(fform,
                             evalArgl(cdr(form),env),env);
+            	}
+            	catch(Exception e){
+	        		gui.parseCommand("error at eval.evalMiscForm, println "+e.toString());
+	        		plist("error eval.evalMiscForm from=",form);
+	        		Thread.dumpStack();        		
+	        		return nilSymbol;      	            	
+            		
+            	}
             }
         }
         if(gui.isTracing())
