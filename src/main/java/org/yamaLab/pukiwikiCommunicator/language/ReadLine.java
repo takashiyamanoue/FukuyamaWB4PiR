@@ -70,6 +70,9 @@ public class ReadLine extends ReadS
                  readEOL();
              }
              LispObject line=readLine();
+             if(lisp.Null(line)){
+            	     return rtn;
+             }
              if(lisp.gui.isTracing()){
                   lisp.plist("",line);
              }

@@ -114,6 +114,7 @@ implements PukiwikiJavaApplication, TwitterApplication, InterpreterInterface, Ru
 	synchronized public void setInput(String x) {
 		// TODO Auto-generated method stub
 //		this.writeMessage("setInput("+x+")");
+		try{
 		this.writeMessage("reading commands from the wiki page");
 		currentPage=x;
 		pushCurrentPage(x);
@@ -214,6 +215,10 @@ implements PukiwikiJavaApplication, TwitterApplication, InterpreterInterface, Ru
 		if(pageStackIsEmpty()&& execInterval==0){
 			execCommands();
 			lastExec=System.currentTimeMillis();
+		}
+		}
+		catch(Exception e){
+			System.out.println("MainController.setInput("+x+") eror:"+e);
 		}
 	}
 
@@ -989,10 +994,13 @@ implements PukiwikiJavaApplication, TwitterApplication, InterpreterInterface, Ru
 //		int tmax=commandTable.getRowCount();
 		int tmax=commandLineNo;
 		boolean rtn=false;
+		String line="";
 		if(commandTable.size()==0) return;		
 		for(int i=0;i<tmax;i++){
 //			String line=(String)commandTable.getValueAt(i,1);
-			String line=commandTable.elementAt(i);
+			try{
+			line=commandTable.elementAt(i);
+			System.out.println("execCommands...line="+line);
 			if(line==null) continue;
 			if(line=="") continue;
 			if(line.startsWith("#")) continue;
@@ -1016,7 +1024,12 @@ implements PukiwikiJavaApplication, TwitterApplication, InterpreterInterface, Ru
 			}			
 //			if(reports.size()>1) return;
 			if(!rtn) return;
+			}
+			catch(Exception e){
+				 System.out.println("MainController.execCommand, line="+line+" error:"+e);
+			}			
 		}
+
 	}
 /*
 	public String getOutputText() {
